@@ -21,5 +21,4 @@ export class DeliveryDriver {
 
   @OneToMany(() => DeliveryAssignment, (assignment) => assignment.driver)
   assignments!: DeliveryAssignment[];
-
 }
