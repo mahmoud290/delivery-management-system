@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { OrdersModule } from './orders/orders.module';
 import { DriversModule } from './drivers/drivers.module';
 import { DeliveryAssignmentModule } from './delivery-assignments/delivery-assignment.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { DeliveryAssignmentModule } from './delivery-assignments/delivery-assign
     OrdersModule,
     DriversModule,
     DeliveryAssignmentModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
