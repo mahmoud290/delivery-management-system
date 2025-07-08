@@ -1,22 +1,26 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Order } from "./order.entity";
+import { Order, OrderStatus } from "./order.entity";
 import { Repository } from "typeorm";
 import { CreateOrderDto } from "./dtos/create-order.dto";
 import { User } from "../users/user.entity";
+import { DeliveryAssignment } from "../delivery-assignments/delivery-assignment.entity";
 
 @Injectable()
 export class OrdersService{
     constructor(
         @InjectRepository(Order)
-        private orderRepository:Repository<Order>
+        private orderRepository:Repository<Order>,
+
+        @InjectRepository(DeliveryAssignment)
+        private readonly assignmentRepository:Repository<DeliveryAssignment>,
     ){}
 
     async createOrder(dto:CreateOrderDto, client:User):Promise<Order>{
         const order = this.orderRepository.create({
             ...dto,
-            status:'pending',
-            client,
+            status: OrderStatus.PENDING,
+            client: client,
         });
         return this.orderRepository.save(order);
     }
@@ -38,13 +42,37 @@ async findOne(id:number):Promise<Order>{
     return order;
 }
 
-async update(id: number, dto: Partial<CreateOrderDto>):Promise<Order>{
-    const order = await this.findOne(id);
+async updateOrderStatus(orderId: number, status: OrderStatus, driverId: number): Promise<Order> {
+  const order = await this.orderRepository.findOne({
+    where: { id: orderId },
+    relations: ['assignments'],
+  });
 
-    Object.assign(order, dto);
+  if (!order) throw new NotFoundException('Order not found');
 
-    return this.orderRepository.save(order);
+  const assignment = order.assignments.find(a => a.driver.id === driverId);
+  if (!assignment) throw new ForbiddenException('Not your order');
+
+  order.status = status;
+
+  const now = new Date();
+  if (status === OrderStatus.IN_TRANSIT) {
+    assignment.pickedUpAt = now;
+  } else if (status === OrderStatus.DELIVERED) {
+    assignment.deliveredAt = now;
+  }
+
+  await this.assignmentRepository.save(assignment);
+  return this.orderRepository.save(order);
 }
+
+async getOrdersForDriver(driverId: number): Promise<Order[]> {
+    return this.orderRepository.find({
+      where: { assignments: { driver: { id: driverId } } },
+      relations: ['client', 'assignments', 'assignments.driver'],
+    });
+  }
+
 async delete(id: number): Promise<void> {
 const result = await this.orderRepository.delete(id);
 

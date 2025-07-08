@@ -1,10 +1,16 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
-import { User } from '../users/user.entity'; 
+import { User } from '../users/user.entity';
 import { DeliveryAssignment } from '../delivery-assignments/delivery-assignment.entity';
 
-export type OrderStatus = 'pending' | 'assigned' | 'in_transit' | 'delivered' | 'cancelled';
+export enum OrderStatus {
+  PENDING = 'pending',
+  ASSIGNED = 'assigned',
+  IN_TRANSIT = 'in_transit',
+  DELIVERED = 'delivered',
+  CANCELLED = 'cancelled',
+}
 
-@Entity()
+@Entity('orders') // optional
 export class Order {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -18,15 +24,15 @@ export class Order {
   @Column()
   packageSize!: string;
 
-  @Column({ default: 'pending' })
-  status!: OrderStatus;
-
   @ManyToOne(() => User, (user) => user.orders, { eager: true })
   client!: User;
 
-  @ManyToOne(() => User, { nullable: true })   
+  @ManyToOne(() => User, (user) => user.deliveries, { nullable: true })
   driver?: User;
 
   @OneToMany(() => DeliveryAssignment, (assignment) => assignment.order)
   assignments!: DeliveryAssignment[];
+
+  @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
+  status!: OrderStatus;
 }

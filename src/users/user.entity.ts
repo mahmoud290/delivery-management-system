@@ -1,11 +1,6 @@
-export enum UserRole {
-  CLIENT = 'client',
-  DRIVER = 'driver',
-  ADMIN = 'admin',
-}
-
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Order } from '../orders/order.entity';
+import { UserRole } from './user-role.enum';
 
 @Entity()
 export class User {
@@ -21,10 +16,12 @@ export class User {
   @Column()
   password!: string;
 
-  @Column()
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.CLIENT })
   role!: UserRole;
 
   @OneToMany(() => Order, (order) => order.client)
   orders!: Order[];
 
+  @OneToMany(() => Order, (order) => order.driver)
+  deliveries!: Order[];
 }
