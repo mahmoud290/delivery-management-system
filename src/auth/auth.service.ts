@@ -5,11 +5,17 @@ import * as bcrypt from 'bcrypt';
 import { User } from '../users/user.entity';
 import { Repository } from 'typeorm';
 import { SigninDto, SignupDto } from './auth.dto';
+import { DeliveryDriver } from 'src/drivers/driver.entity';
+import { UserRole } from 'src/users/user-role.enum';
 @Injectable()
 export class AuthService{
     constructor(
         @InjectRepository(User)
         private userRepository:Repository<User>,
+
+        @InjectRepository(DeliveryDriver)
+        private driverRepository: Repository<DeliveryDriver>,
+
         private jwtService:JwtService
     ){}
 
@@ -22,6 +28,11 @@ if (existingUser) {
         const hashed = await bcrypt.hash(dto.password,10) 
         const user = this.userRepository.create({...dto,password:hashed});
         await this.userRepository.save(user);
+
+        if (user.role === UserRole.DRIVER) {
+    const deliveryDriver = this.driverRepository.create({ user });
+    await this.driverRepository.save(deliveryDriver);
+}
 
         return { message: 'Signup successful' };
     }

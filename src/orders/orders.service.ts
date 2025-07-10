@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/commo
 import { InjectRepository } from "@nestjs/typeorm";
 import { Order, OrderStatus } from "./order.entity";
 import { Repository } from "typeorm";
-import { CreateOrderDto } from "./dtos/create-order.dto";
+import { CreateOrderDto } from "./dtos/create-order.dto"; 
 import { User } from "../users/user.entity";
 import { DeliveryAssignment } from "../delivery-assignments/delivery-assignment.entity";
 
@@ -45,12 +45,14 @@ async findOne(id:number):Promise<Order>{
 async updateOrderStatus(orderId: number, status: OrderStatus, driverId: number): Promise<Order> {
   const order = await this.orderRepository.findOne({
     where: { id: orderId },
-    relations: ['assignments'],
+    relations: ['assignments', 'assignments.driver'],
   });
 
   if (!order) throw new NotFoundException('Order not found');
 
-  const assignment = order.assignments.find(a => a.driver.id === driverId);
+const assignment = order.assignments.find(
+  a => a.driver.user.id === driverId,
+);
   if (!assignment) throw new ForbiddenException('Not your order');
 
   order.status = status;
@@ -67,11 +69,16 @@ async updateOrderStatus(orderId: number, status: OrderStatus, driverId: number):
 }
 
 async getOrdersForDriver(driverId: number): Promise<Order[]> {
-    return this.orderRepository.find({
-      where: { assignments: { driver: { id: driverId } } },
-      relations: ['client', 'assignments', 'assignments.driver'],
-    });
-  }
+  return this.orderRepository
+    .createQueryBuilder('order')
+    .leftJoinAndSelect('order.client', 'client')
+    .leftJoinAndSelect('order.assignments', 'assignment')
+    .leftJoinAndSelect('assignment.driver', 'driver')
+    .leftJoinAndSelect('driver.user', 'user')
+    .where('user.id = :driverId', { driverId })
+    .getMany();
+}
+
 
 async delete(id: number): Promise<void> {
 const result = await this.orderRepository.delete(id);

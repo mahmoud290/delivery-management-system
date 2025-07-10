@@ -7,10 +7,10 @@ export class DeliveryAssignment {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => Order, { eager: true })
+  @ManyToOne(() => Order, { eager: true, onDelete:'CASCADE' })
   order!: Order;
 
-  @ManyToOne(() => DeliveryDriver, { eager: true })
+  @ManyToOne(() => DeliveryDriver, { eager: true ,onDelete: 'CASCADE'})
   driver!: DeliveryDriver;
 
   @Column({ type: 'timestamp', nullable: true })

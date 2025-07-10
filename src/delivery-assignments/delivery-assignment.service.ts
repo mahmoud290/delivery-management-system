@@ -3,8 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { DeliveryAssignment } from "./delivery-assignment.entity";
 import { Repository } from "typeorm";
 import { Order } from "../orders/order.entity";
-import { DeliveryDriver } from "../drivers/driver.entity";
 import { DeliveryStatus, UpdateAssignmentStatusDto } from "./dtos/update-assignment.dto";
+import { DeliveryDriver } from "src/drivers/driver.entity";
 
 @Injectable()
 export class DeliveryAssignmentService{

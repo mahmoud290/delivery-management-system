@@ -8,7 +8,7 @@ export class DeliveryDriver {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToOne(() => User)
+  @OneToOne(() => User,{ onDelete: 'CASCADE', eager: true })
   @JoinColumn()
   user!: User;
 

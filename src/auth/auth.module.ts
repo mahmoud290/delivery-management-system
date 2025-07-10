@@ -5,19 +5,24 @@ import { JwtModule } from "@nestjs/jwt";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { JwtStrategy } from "./jwt.strategy";
-import { ConfigModule } from "@nestjs/config";
+import {  ConfigService } from "@nestjs/config";
 import { RolesGuard } from "./guards/roles.guard";
 import { PassportModule } from "@nestjs/passport";
+import { DeliveryDriver } from "src/drivers/driver.entity";
+import { DriversModule } from "src/drivers/drivers.module";
 
 @Module({
     imports:[
-        ConfigModule.forRoot(),
-        TypeOrmModule.forFeature([User]),
+        TypeOrmModule.forFeature([User,DeliveryDriver]),
         PassportModule.register({ defaultStrategy: 'jwt' }),
-JwtModule.register({
-    secret:  process.env.JWT_SECRET, 
+JwtModule.registerAsync({
+useFactory: (config: ConfigService) => ({
+    secret: config.get<string>('JWT_SECRET'),
     signOptions: { expiresIn: '1h' },
 }),
+inject: [ConfigService],
+}),
+DriversModule,
 ],
 controllers:[AuthController],
 providers:[AuthService, JwtStrategy,RolesGuard],

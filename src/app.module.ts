@@ -8,10 +8,6 @@ import { DeliveryAssignmentModule } from './delivery-assignments/delivery-assign
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 
-import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './auth/guards/roles.guard';
-import { AuthGuard } from '@nestjs/passport';
-
 @Module({
   imports: [
     ConfigModule.forRoot({
