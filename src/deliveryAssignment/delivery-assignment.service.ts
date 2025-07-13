@@ -27,6 +27,7 @@ export class DeliveryAssignmentService{
             const assignment = this.assignmentRepository.create({
                 order,
                 driver,
+                assignedAt: new Date(),
             });
             return this.assignmentRepository.save(assignment);
     }

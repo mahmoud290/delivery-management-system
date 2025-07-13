@@ -22,6 +22,7 @@ describe('Orders Integration Test', () => {
     await app.init();
 
     dataSource = moduleFixture.get(DataSource);
+
     await dataSource.createQueryBuilder().delete().from('delivery_assignment').execute();
     await dataSource.createQueryBuilder().delete().from('delivery_driver').execute();
     await dataSource.createQueryBuilder().delete().from('orders').execute();
@@ -80,6 +81,7 @@ describe('Orders Integration Test', () => {
       .post('/orders')
       .set('Authorization', `Bearer ${clientToken}`)
       .send({
+        description: 'Test order',  
         pickupLocation: 'Cairo',
         dropoffLocation: 'Giza',
         packageSize: 'medium',

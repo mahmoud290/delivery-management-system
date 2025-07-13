@@ -1,23 +1,28 @@
 {
-  "type": "module",
   "name": "delivery-management-system",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start:dev": "ts-node src/main.ts",
-  "test": "jest",
-  "test:watch": "jest --watch",
-  "test:unit": "jest --testPathPattern=.unit",
-  "test:integration": "jest --testPathPattern=.int",
-  "test:e2e": "jest --testPathPattern=.e2e",
-
-  "test:users:unit": "jest src/users/tests/users.unit.spec.ts",
-  "test:users:int": "jest src/users/tests/users.int.spec.ts",
-  "test:users:e2e": "jest src/users/tests/users.e2e.spec.ts",
-  "test:orders:unit": "jest src/orders/tests/orders.unit.spec.ts",
-  "test:orders:int": "jest src/orders/tests/orders.int.spec.ts",
-  "test:orders:e2e": "jest src/orders/tests/orders.e2e.spec.ts"
-
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:unit": "jest --testPathPattern=.unit",
+    "test:integration": "jest --testPathPattern=.int",
+    "test:e2e": "jest --testPathPattern=.e2e",
+    "test:users:unit": "jest src/users/tests/users.unit.spec.ts",
+    "test:users:int": "jest src/users/tests/users.int.spec.ts",
+    "test:users:e2e": "jest src/users/tests/users.e2e.spec.ts",
+    "test:orders:unit": "jest src/orders/tests/orders.unit.spec.ts",
+    "test:orders:int": "jest src/orders/tests/orders.int.spec.ts",
+    "test:orders:e2e": "jest src/orders/tests/orders.e2e.spec.ts",
+    "test:drivers:unit": "jest src/drivers/tests/drivers.unit.spec.ts",
+    "test:drivers:int": "jest src/drivers/tests/drivers.int.spec.ts",
+    "test:drivers:e2e": "jest src/drivers/tests/drivers.e2e.spec.ts",
+    "test:delivery-assignment:unit": "jest src/deliveryAssignment/tests/delivery-assignment.unit.spec.ts",
+    "test:delivery-assignment:int": "jest src/deliveryAssignment/tests/delivery-assignment.int.spec.ts",
+    "test:delivery-assignment:e2e": "jest src/deliveryAssignment/tests/delivery-assignment.e2e.spec.ts"
   },
   "keywords": [],
   "author": "",
@@ -41,6 +46,7 @@
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
+    "sqlite3": "^5.1.7",
     "typeorm": "^0.3.25"
   },
   "devDependencies": {

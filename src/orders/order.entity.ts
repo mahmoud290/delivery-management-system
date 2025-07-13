@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { User } from '../users/user.entity';
-import { DeliveryAssignment } from '../delivery-assignments/delivery-assignment.entity';
+import { DeliveryAssignment } from '../deliveryAssignment/delivery-assignment.entity';
 
 export enum OrderStatus {
   PENDING = 'pending',
@@ -13,7 +13,10 @@ export enum OrderStatus {
 @Entity('orders') // optional
 export class Order {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id!: number;  
+
+  @Column()
+  description!: string;
 
   @Column()
   pickupLocation!: string;

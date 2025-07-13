@@ -4,7 +4,7 @@ import { Order, OrderStatus } from "./order.entity";
 import { Repository } from "typeorm";
 import { CreateOrderDto } from "./dtos/create-order.dto"; 
 import { User } from "../users/user.entity";
-import { DeliveryAssignment } from "../delivery-assignments/delivery-assignment.entity";
+import { DeliveryAssignment } from "../deliveryAssignment/delivery-assignment.entity";
 
 @Injectable()
 export class OrdersService{

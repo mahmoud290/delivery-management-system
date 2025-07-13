@@ -5,7 +5,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { JwtStrategy } from "./jwt.strategy";
-import {  ConfigService } from "@nestjs/config";
+import {  ConfigModule, ConfigService } from "@nestjs/config";
 import { RolesGuard } from "./guards/roles.guard";
 import { PassportModule } from "@nestjs/passport";
 import { DeliveryDriver } from "src/drivers/driver.entity";
@@ -13,6 +13,7 @@ import { DriversModule } from "src/drivers/drivers.module";
 
 @Module({
     imports:[
+        ConfigModule,
         TypeOrmModule.forFeature([User,DeliveryDriver]),
         PassportModule.register({ defaultStrategy: 'jwt' }),
 JwtModule.registerAsync({

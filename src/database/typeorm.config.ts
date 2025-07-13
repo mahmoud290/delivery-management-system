@@ -3,7 +3,7 @@ import { User } from '../users/user.entity';
 import { Order } from '../orders/order.entity';
 import { DeliveryDriver } from '../drivers/driver.entity';
 import * as dotenv from 'dotenv';
-import { DeliveryAssignment } from '../delivery-assignments/delivery-assignment.entity';
+import { DeliveryAssignment } from '../deliveryAssignment/delivery-assignment.entity';
 
 dotenv.config();
 

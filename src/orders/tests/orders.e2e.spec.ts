@@ -26,11 +26,13 @@ describe('Orders E2E', () => {
 
     dataSource = moduleFixture.get(DataSource);
 
+    // 🧹 Clean up database
     await dataSource.query(`DELETE FROM delivery_assignment`);
     await dataSource.query(`DELETE FROM orders`);
+    await dataSource.query(`DELETE FROM delivery_driver`);
     await dataSource.query(`DELETE FROM "user"`);
 
-    // Create CLIENT
+    // 👤 Create CLIENT
     await request(app.getHttpServer())
       .post('/auth/signup')
       .send({
@@ -46,9 +48,10 @@ describe('Orders E2E', () => {
         email: 'client@test.com',
         password: '123456',
       });
+
     clientToken = clientRes.body.access_token;
 
-    // Create ADMIN
+    // 👤 Create ADMIN
     await request(app.getHttpServer())
       .post('/auth/signup')
       .send({
@@ -64,9 +67,10 @@ describe('Orders E2E', () => {
         email: 'admin@test.com',
         password: '123456',
       });
+
     adminToken = adminRes.body.access_token;
 
-    // ✅ Create DRIVER
+    // 👤 Create DRIVER
     await request(app.getHttpServer())
       .post('/auth/signup')
       .send({
@@ -76,8 +80,14 @@ describe('Orders E2E', () => {
         role: UserRole.DRIVER,
       });
 
-    const driverUser = await dataSource.query(`SELECT * FROM "user" WHERE email = 'driver@test.com'`);
-    const deliveryDriver = await dataSource.query(`SELECT * FROM "delivery_driver" WHERE "userId" = ${driverUser[0].id}`);
+    const driverUser = await dataSource.query(
+      `SELECT * FROM "user" WHERE email = 'driver@test.com'`,
+    );
+
+    const deliveryDriver = await dataSource.query(
+      `SELECT * FROM "delivery_driver" WHERE "userId" = ${driverUser[0].id}`,
+    );
+
     driverId = deliveryDriver[0].id;
 
     const driverRes = await request(app.getHttpServer())
@@ -95,22 +105,26 @@ describe('Orders E2E', () => {
     await app.close();
   });
 
-  it('should create an order (POST /orders)', async () => {
+  it('✅ should create an order (POST /orders)', async () => {
     const res = await request(app.getHttpServer())
       .post('/orders')
       .set('Authorization', `Bearer ${clientToken}`)
       .send({
+        description: 'Test order',
         pickupLocation: 'Alexandria',
         dropoffLocation: 'Cairo',
         packageSize: 'small',
       });
 
+    console.log('📦 Create order response:', res.body);
+
     expect(res.status).toBe(201);
     createdOrderId = res.body.id;
-    expect(createdOrderId).toBeDefined();
+    expect(typeof createdOrderId).toBe('number');
+    expect(isNaN(createdOrderId)).toBe(false);
   });
 
-  it('should get order by id (GET /orders/:id)', async () => {
+  it('📦 should get order by id (GET /orders/:id)', async () => {
     const res = await request(app.getHttpServer())
       .get(`/orders/${createdOrderId}`)
       .set('Authorization', `Bearer ${clientToken}`);
@@ -119,7 +133,7 @@ describe('Orders E2E', () => {
     expect(res.body.id).toBe(createdOrderId);
   });
 
-  it('admin should assign driver to the order (POST /assignments)', async () => {
+  it('👨‍💼 admin should assign driver to order (POST /assignments)', async () => {
     const res = await request(app.getHttpServer())
       .post('/assignments')
       .set('Authorization', `Bearer ${adminToken}`)
@@ -133,19 +147,18 @@ describe('Orders E2E', () => {
     expect(res.body.driver.id).toBe(driverId);
   });
 
-  it('driver should get their assigned orders (GET /orders/drivers/me/orders)', async () => {
+  it('🚚 driver should get assigned orders (GET /orders/drivers/me/orders)', async () => {
     const res = await request(app.getHttpServer())
       .get('/orders/drivers/me/orders')
       .set('Authorization', `Bearer ${driverToken}`);
 
-    console.log('📦 Orders returned to driver:', res.body);
-
     expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
     expect(res.body.length).toBeGreaterThan(0);
     expect(res.body[0].id).toBe(createdOrderId);
   });
 
-  it('driver should update order status to IN_TRANSIT (PATCH /orders/:id/status)', async () => {
+  it('🚚 driver should update status to IN_TRANSIT (PATCH /orders/:id/status)', async () => {
     const res = await request(app.getHttpServer())
       .patch(`/orders/${createdOrderId}/status`)
       .set('Authorization', `Bearer ${driverToken}`)
@@ -157,7 +170,7 @@ describe('Orders E2E', () => {
     expect(res.body.status).toBe('in_transit');
   });
 
-  it('driver should update order status to DELIVERED', async () => {
+  it('📦 driver should update status to DELIVERED', async () => {
     const res = await request(app.getHttpServer())
       .patch(`/orders/${createdOrderId}/status`)
       .set('Authorization', `Bearer ${driverToken}`)
@@ -169,12 +182,14 @@ describe('Orders E2E', () => {
     expect(res.body.status).toBe('delivered');
   });
 
-  it('admin should delete the order', async () => {
+  it('🗑️ admin should delete the order', async () => {
     const res = await request(app.getHttpServer())
       .delete(`/orders/${createdOrderId}`)
       .set('Authorization', `Bearer ${adminToken}`);
 
     expect(res.status).toBe(200);
-    expect(res.body.message).toContain(`Order with id ${createdOrderId} has been deleted`);
+    expect(res.body.message).toContain(
+      `Order with id ${createdOrderId} has been deleted`,
+    );
   });
 });

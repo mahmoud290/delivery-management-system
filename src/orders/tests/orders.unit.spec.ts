@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OrdersService } from '../orders.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Order, OrderStatus } from '../order.entity';
-import { DeliveryAssignment } from 'src/delivery-assignments/delivery-assignment.entity';
+import { DeliveryAssignment } from 'src/deliveryAssignment/delivery-assignment.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/user.entity';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';

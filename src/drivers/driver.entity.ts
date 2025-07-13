@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany } from 'typeorm';
 import { User } from '../users/user.entity';
 import { DriverStatus } from './dtos/create-driver.dto';
-import { DeliveryAssignment } from '../delivery-assignments/delivery-assignment.entity';
+import { DeliveryAssignment } from '../deliveryAssignment/delivery-assignment.entity';
 
 @Entity()
 export class DeliveryDriver {
