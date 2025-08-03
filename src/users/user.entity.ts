@@ -13,7 +13,10 @@ export class User {
   @Column({ unique: true })
   email!: string;
 
-  @Column()
+  @Column({ nullable: true })
+  profileImage!: string;
+
+  @Column({nullable:true})
   password!: string;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.CLIENT })

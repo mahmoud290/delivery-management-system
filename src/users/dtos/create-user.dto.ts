@@ -11,7 +11,9 @@ export class CreateUserDto {
   @IsString()
   password!: string;
 
-  
+@IsString()
+profileImage?: string;
+
 @IsEnum(UserRole)
 role!: UserRole;
 }
