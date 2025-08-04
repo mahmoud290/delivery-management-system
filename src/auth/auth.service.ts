@@ -86,9 +86,12 @@ return {
     user,
 };
 }
+
 LinkedinAuth(req: Request) {
     return { message: 'Redirecting to Linkedin...' };
 }
+
+
 async handleLinkedinRedirect(profile:any , provider:any){
     let user = await this.usersService.findByEmail(profile.email);
     
@@ -109,5 +112,39 @@ async handleLinkedinRedirect(profile:any , provider:any){
 
     const accessToken = this.jwtService.sign(payload);
     return { accessToken, user };
+}
+
+FacebookAuth(req: Request) {
+    return { message: 'Redirecting to Facebook...' };
+}
+
+async handleFacebookRedirect(profile: any) {
+    if (!profile || !profile.emails || !profile.emails[0]?.value) {
+        throw new UnauthorizedException('No Facebook user data found');
+    }
+
+    const email = profile.emails[0].value;
+    const name = profile.displayName || 'Facebook User';
+
+    let user = await this.usersService.findByEmail(email);
+
+    if (!user) {
+        user = await this.usersService.createUser({
+            name: name,
+            email: email,
+            profileImage: '',       
+            password: '',
+            role: UserRole.CLIENT,
+        });
+    }
+
+    const payload = { sub: user.id, role: user.role };
+    const token = await this.jwtService.signAsync(payload);
+
+    return {
+        message: 'Facebook Login Successful',
+        access_token: token,
+        user,
+    };
 }
 }

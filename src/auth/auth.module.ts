@@ -13,6 +13,7 @@ import { DriversModule } from "src/drivers/drivers.module";
 import { GoogleStrategy } from "./strategies/google.strategy";
 import { LinkedinStrategy } from "./strategies/linkedin.strategy";
 import { UsersModule } from "src/users/users.module";
+import { FacebookStrategy } from "./strategies/facebook.strategy";
 
 @Module({
     imports:[
@@ -29,7 +30,7 @@ inject: [ConfigService],
 DriversModule,
 ],
 controllers:[AuthController],
-providers:[AuthService, JwtStrategy,RolesGuard,GoogleStrategy,LinkedinStrategy],
+providers:[AuthService, JwtStrategy,RolesGuard,GoogleStrategy,LinkedinStrategy,FacebookStrategy],
 exports:[JwtStrategy]
 })
 export class AuthModule{}

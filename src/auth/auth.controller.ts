@@ -52,4 +52,18 @@ async linkedinRedirect(@Req() req:Request, @Res() res:Response) {
     user,
     });
 }
+
+@Get('facebook')
+@UseGuards(AuthGuard('facebook'))
+async facebookLogin(@Req() req:Request) {
+    return this.authService.FacebookAuth(req);
+
+}
+
+@Get('facebook/redirect')
+@UseGuards(AuthGuard('facebook'))
+async facebookRedirect(@Req() req:Request) {
+return this.authService.handleFacebookRedirect(req.user);
+}
+
 }
