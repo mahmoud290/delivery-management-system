@@ -2,6 +2,8 @@
 
 A backend system for managing delivery operations, built with **NestJS** and **PostgreSQL**.
 
+---
+
 ## 🧩 Features
 
 - 👥 User authentication & authorization (Client, Driver, Admin)
@@ -27,38 +29,36 @@ A backend system for managing delivery operations, built with **NestJS** and **P
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/your-username/delivery-management-system.git
+git clone https://github.com/mahmoud290/delivery-management-system.git
 cd delivery-management-system
+2. Install dependencies
 
 
-# Run The Project
+
+npm install
+3. Run the project
+
+
+
 npm run start:dev
+🧪 Run Tests
+1 - Users Module
 
-
-# Run The Tests
-
-# users
 npm run test:users:unit
 npm run test:users:int
 npm run test:users:e2e
 
-# orders
+2 - Orders Module
 npm run test:orders:unit
-npm run test:orders:unit
-npm run test:orders:unit
+npm run test:orders:int
+npm run test:orders:e2e
 
-# drivers
+3 - Drivers Module
 npm run test:drivers:unit
-npm run test:drivers:unit
-npm run test:drivers:unit
+npm run test:drivers:int
+npm run test:drivers:e2e
 
-# delivery-assignment
+4 - Delivery Assignment Module
 npm run test:delivery-assignment:unit
 npm run test:delivery-assignment:int
 npm run test:delivery-assignment:e2e
-
-
-
-
-
-
