@@ -7,6 +7,7 @@ import { DriversModule } from './drivers/drivers.module';
 import { DeliveryAssignmentModule } from './deliveryAssignment/delivery-assignment.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ConfigModule } from '@nestjs/config';
     DriversModule,
     DeliveryAssignmentModule,
     AuthModule,
+    FilesModule
   ],
   controllers: [],
   providers: [],
